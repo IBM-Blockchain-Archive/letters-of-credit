@@ -1,0 +1,68 @@
+version: '2'
+messages:
+  $i18n: locales.yml
+template:
+  name:
+    $ref: "#/messages/template.name"
+  description:
+    $ref: "#/messages/template.description"
+  header: '![](LetterOfCreditToolchainDiagram.png)'
+  icon: "../public/imgs/LetterOfCreditToolchainDiagram.png"
+  required:
+    - loc-build
+    - loc-repo
+  info:
+    git url: >-
+      [https://github.com/ibm-blockchain/letters-of-credit](https://github.com/ibm-blockchain/letters-of-credit)
+    git branch: >-
+      [master](https://github.com/ibm-blockchain/letters-of-credit/tree/master)
+toolchain:
+  name: 'letters-of-credit-tc-{{timestamp}}'
+  template:
+    getting_started:
+      $ref: "#/messages/template.gettingStarted"
+services:
+  loc-repo:
+    service_id: githubpublic
+    parameters:
+      repo_name: 'letters-of-credit-{{timestamp}}'
+      repo_url: 'https://github.com/ibm-blockchain/letters-of-credit'
+      type: clone
+      has_issues: false
+      enable_traceability: true
+  loc-build:
+    service_id: pipeline
+    parameters:
+      services:
+        - loc-repo
+      name: '{{services.loc-repo.parameters.repo_name}}'
+      ui-pipeline: true
+      sin: 'test'
+      configuration:
+        content:
+          $text: pipeline.yml
+        env:
+          SIN: 'testing'
+          SAMPLE_REPO: loc-repo
+          CF_APP_NAME: '{{form.pipeline.parameters.prod-app-name}}'
+          PROD_SPACE_NAME: '{{form.pipeline.parameters.prod-space}}'
+          PROD_ORG_NAME: '{{form.pipeline.parameters.prod-organization}}'
+          PROD_REGION_ID: '{{form.pipeline.parameters.prod-region}}'
+        execute: true
+  loc-app:
+    service_id: customtool
+    parameters:
+      type: 'Letters of Credit'
+      lifecyclePhase: 'RUN'
+      imageUrl: 'https://github.com/ibm-blockchain/letters-of-credit/raw/master/public/imgs/LetterOfCreditToolchainDiagram.png'
+      documentationUrl: 'https://github.com/ibm-blockchain/letters-of-credit'
+      name: 'Node.js Application'
+      dashboard_url: 'https://{{form.pipeline.parameters.prod-app-name}}.mybluemix.net/login'
+      description: 'This is your Letters of Credit application. You do not need to modify anything.'
+      additional-properties: 'nope'
+form:
+  pipeline:
+    parameters:
+      prod-app-name: '{{services.loc-repo.parameters.repo_name}}'
+    schema:
+      $ref: deploy.json

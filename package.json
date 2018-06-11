@@ -1,0 +1,10 @@
+{
+    "name": "letters-of-credit-sample",
+    "private": true,
+    "version": "0.0.1",
+    "description": "Letters of credit sample",
+    "author": "IBM Blockchain",
+    "license": "Apache-2.0",
+    "dependencies": {}
+  }
+  
