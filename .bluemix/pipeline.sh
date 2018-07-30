@@ -3,7 +3,7 @@ set -ex
 trap 'detect_exit' 0 1 2 3 6
 
 export IBP_NAME="ibm-blockchain-5-prod"
-export IBP_PLAN="ibm-blockchain-plan-v1-starter-prod"
+export IBP_PLAN="ibm-blockchain-plan-v1-ga1-starter-prod"
 export VCAP_KEY_NAME="Credentials-1"
 export APP_URL="unknown_yet"  # we correct this later
 
